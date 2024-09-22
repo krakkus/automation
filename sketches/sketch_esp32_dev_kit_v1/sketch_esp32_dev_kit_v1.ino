@@ -1,6 +1,14 @@
-#include <WiFi.h>
+#ifdef ESP32
+  #include <WiFi.h>
+  #include <WebServer.h>
+  WebServer server(80);
+#else
+  #include <ESP8266WiFi.h>
+  #include <ESP8266WebServer.h>
+  ESP8266WebServer server(80);
+#endif
+
 #include <EEPROM.h>
-#include <WebServer.h>
 
 String id;
 String ssid;
@@ -10,7 +18,6 @@ const char* ap_ssid = "MY_ESP32"; // Access point SSID
 const char* ap_password = "password"; // Access point password
 
 // Create an instance of the web server
-WebServer server(80);
 
 // Pin ownership registration
 enum Owner { None, DigitalWrite, DigitalRead, AnalogWrite, AnalogRead };
