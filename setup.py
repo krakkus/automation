@@ -7,5 +7,5 @@ setup(
    author='Krakkus',
    author_email='foomail@foo.example',
    packages=['automation'],  #same as name
-   install_requires=['wheel', 'requests'], #external packages as dependencies
+   install_requires=['selenium', 'requests'], #external packages as dependencies
 )
