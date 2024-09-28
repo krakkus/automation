@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
    name='automaion',
@@ -6,6 +6,6 @@ setup(
    description='A useful module',
    author='Krakkus',
    author_email='foomail@foo.example',
-   packages=['automation'],  #same as name
+   packages=find_packages(),
    install_requires=['selenium', 'requests'], #external packages as dependencies
 )
