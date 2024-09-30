@@ -4,6 +4,7 @@ import urllib.parse
 import secrets
 import string
 import os
+import json
 import time
 
 port = 30008
@@ -88,37 +89,24 @@ class MyHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(response.encode('utf-8'))
             return
 
-        if path == "/table_1_write":
+        if path == "/query":
             self.send_response(200)
-            self.send_header("Content-type", "text/plain")
+            self.send_header("Content-type", "text/json")
             self.end_headers()
 
-            api_key = params["api_key"][0]
-            type = params["type"][0]
-            last_updated = int(time.time())
-            key_txt = param_or_empty("key_txt", params)
-            key_int = param_or_zero("key_int", params)
-            value_txt = param_or_empty("value_txt", params)
-            value_int = param_or_zero("value_int", params)
-            extra_txt = param_or_empty("extra_txt", params)
-            extra_int = param_or_zero("extra_int", params)
-
-            if len(api_key) != 32:
+            if len(params["apikey"][0]) != 32:
                 return
+            connection, cursor = open_db(params["apikey"][0])
 
-            connection, cursor = open_db(api_key)
-
-            cursor.execute("INSERT OR REPLACE INTO table_1 (type, last_updated, key_txt, key_int,"
-                           "value_txt, value_int, extra_txt, extra_int) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                           (type, last_updated, key_txt, key_int, value_txt, value_int, extra_txt, extra_int))
-
+            cursor.execute(params["query"][0])
+            rows = cursor.fetchall()
             cursor.close()
             connection.commit()
             connection.close()
 
-            response = ""
+            json_string = json.dumps(rows)
+            self.wfile.write(json_string.encode('utf-8'))
 
-            self.wfile.write(response.encode('utf-8'))
             return
 
         else:

@@ -1,4 +1,5 @@
 import requests
+import urllib
 
 
 class Client:
@@ -8,9 +9,19 @@ class Client:
         self.server = server
         self.key = key
 
-    def table_1_write(self, type, key_txt, key_int, value_txt="", value_int=0, extra_txt="", extra_int=0):
-        url = f"{self.server}/table_1_write?api_key={self.key}&" \
-              f"type={type}&key_txt={key_txt}&key_int={key_int}&" \
-              f"value_txt={value_txt}&value_int={value_int}&extra_txt={extra_txt}&extra_int={extra_int}"
-        r = requests.get(url)
-        print(r.status_code)
+    def query(self, query):
+        params = {"apikey": self.key,
+                  "query": query}
+
+        url = f"{self.server}/query?{params}"
+
+        response = requests.get(url, params=params)
+
+        if response.status_code == 200:
+            data = response.json()  # Assuming the response is JSON
+            return data
+        else:
+            # Request failed
+            print("Request failed with status code:", response.status_code)
+
+        return
