@@ -36,14 +36,14 @@ def open_db(api_key):
 
     if version == 0:
         cursor.execute("CREATE TABLE table_1 ("
-                       "type TEXT,"
-                       "last_updated INTEGER,"
-                       "key_txt TEXT,"
-                       "key_int INTEGER,"
-                       "value_txt TEXT,"
-                       "value_int INTEGER,"
-                       "extra_txt TEXT,"
-                       "extra_int INTEGER"
+                       "type TEXT DEFAULT '',"
+                       "last_updated INTEGER DEFAULT CURRENT_TIMESTAMP,"
+                       "key_txt TEXT DEFAULT '',"
+                       "key_int INTEGER DEFAULT 0,"
+                       "value_txt TEXT DEFAULT '',"
+                       "value_int INTEGER DEFAULT 0,"
+                       "extra_txt TEXT DEFAULT '',"
+                       "extra_int INTEGER DEFAULT 0"
                        ")")
         cursor.execute("CREATE UNIQUE INDEX table_1_index ON table_1 (type, key_txt, key_int)")
         cursor.execute("INSERT INTO table_1 (type, key_txt, key_int, value_int) VALUES ('SYSTEM', 'db_version', 0, 1)")
