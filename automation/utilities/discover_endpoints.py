@@ -5,7 +5,7 @@ import requests
 
 def __check_ip(ip, results):
     try:
-        response = requests.get(f"http://{ip}/handshake", timeout=5)
+        response = requests.get(f"http://{ip}/handshake", timeout=15)
         if response.status_code == 200:
             response_text = response.text.strip()
             if response_text.startswith("handshake,"):
