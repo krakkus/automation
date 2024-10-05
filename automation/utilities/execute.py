@@ -52,29 +52,23 @@ def execute_at(what, when, retries=2, delay_seconds=5):
         print("No success!")
 
 
-def run_every_hour(what, retries=2, delay_seconds=5):
-    now = datetime.datetime.now()
-    next_hour = now.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
-
-    if next_hour <= now:
-        next_hour += datetime.timedelta(hours=1)
-
-    prev_time = datetime.datetime.now()
+def run_every_x_minutes(what, minutes, retries=2, delay_seconds=5):
+    segment_size = 60 * minutes
+    current_segment = int(time.time() / segment_size)
+    thresshold = (current_segment + 1) * segment_size
 
     while True:
-        current_time = datetime.datetime.now()
-        time_left = next_hour - current_time
+        time_left = thresshold - time.time()
 
         # Check if the deadline has been passed
-        if prev_time < next_hour and current_time >= next_hour:
+        if time.time() >= thresshold:
             print("\nTime to execute script!")
             break
 
         # Print the deadline, current time, and time left
-        print(f"\rDeadline: {next_hour.strftime('%H:%M:%S')} | Current Time: {current_time.strftime('%H:%M:%S')} | Time Left: {int(time_left.total_seconds())} seconds", end="")
-
-        # Update prev_time
-        prev_time = current_time
+        print(
+            f"\rTime Left: {int(time_left)} seconds",
+            end="")
 
         # Wait for 1 second
         time.sleep(1)
@@ -100,3 +94,4 @@ def run_every_hour(what, retries=2, delay_seconds=5):
         print("Success!")
     else:
         print("No success!")
+

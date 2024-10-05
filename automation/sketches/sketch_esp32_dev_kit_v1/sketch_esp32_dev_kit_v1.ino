@@ -9,6 +9,7 @@
 #endif
 
 #include <EEPROM.h>
+#include <HTTPClient.h>
 
 String id;
 String ssid;
@@ -17,7 +18,11 @@ String password;
 const char* ap_ssid = "MY_ESP32"; // Access point SSID
 const char* ap_password = "password"; // Access point password
 
-// Create an instance of the web server
+#define EEPROM_SIZE 1024
+
+// For Heartbeat
+int heartbeatInterval = 1000;
+int lastHeartbeat = millis();
 
 // Pin ownership registration
 enum Owner { None, DigitalWrite, DigitalRead, AnalogWrite, AnalogRead };
@@ -27,7 +32,6 @@ void setup() {
   Serial.begin(115200);
   delay(2000);
 
-#define EEPROM_SIZE 1024
   EEPROM.begin(EEPROM_SIZE);
 
   loadAllConfig();
@@ -88,9 +92,21 @@ void setup() {
   server.begin();
 }
 
-
 void loop() {
   server.handleClient();
+  
+  if (millis() - lastHeartbeat > 60000) {
+    lastHeartbeat = millis();
+    // Get the default gateway IP address
+    IPAddress gatewayIP = WiFi.gatewayIP();
+    String url = "http://" + gatewayIP.toString() + "/";
+    HTTPClient http;
+    http.begin(url);
+    http.end();
+
+    Serial.print("Keep alive: did request to: ");
+    Serial.println(url);
+  }
 }
 
 /***********************************
