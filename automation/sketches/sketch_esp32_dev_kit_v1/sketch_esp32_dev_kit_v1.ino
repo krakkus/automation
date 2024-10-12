@@ -20,8 +20,9 @@ const char* ap_password = "password"; // Access point password
 
 #define EEPROM_SIZE 1024
 
-// For Heartbeat
-int heartbeatInterval = 1000;
+// For Heartbeat / DHCP renew
+bool do_renew_lease = false;
+int heartbeatInterval = 300000;
 int lastHeartbeat = millis();
 
 // Pin ownership registration
@@ -63,6 +64,7 @@ void setup() {
     Serial.println("Connected to network, SSID: " + String(ssid));
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+    do_renew_lease = true;
   }
   else
   {
@@ -95,17 +97,13 @@ void setup() {
 void loop() {
   server.handleClient();
   
-  if (millis() - lastHeartbeat > 60000) {
+  if (millis() - lastHeartbeat > heartbeatInterval) {
     lastHeartbeat = millis();
-    // Get the default gateway IP address
-    IPAddress gatewayIP = WiFi.gatewayIP();
-    String url = "http://" + gatewayIP.toString() + "/";
-    HTTPClient http;
-    http.begin(url);
-    http.end();
-
-    Serial.print("Keep alive: did request to: ");
-    Serial.println(url);
+   
+    if (do_renew_lease) {  // Not sure if reconnect is needed at all
+      //WiFi.reconnect();
+      //Serial.println("WiFi.reconnect()");
+    }
   }
 }
 
