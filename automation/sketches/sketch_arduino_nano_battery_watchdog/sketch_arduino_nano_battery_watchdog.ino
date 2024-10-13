@@ -15,7 +15,7 @@ void loop() {
   float voltage = sensorValue * 25 / 687;
 
   if (voltage > 26) enable = true;
-  if (voltage < 24) enable = false;
+  if (voltage < 25.6) enable = false;
 
   if (esp == 1 && enable == true) {
     digitalWrite(13, 1);

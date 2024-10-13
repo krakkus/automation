@@ -95,3 +95,17 @@ def run_every_x_minutes(what, minutes, retries=2, delay_seconds=5):
     else:
         print("No success!")
 
+def run(what):
+    result = False
+
+    try:
+        result = what()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        traceback.print_exc()
+
+    if result:
+        print("Success!")
+    else:
+        print("No success!")
+
