@@ -13,6 +13,8 @@ void loop() {
   int esp = digitalRead(A1);
 
   float voltage = sensorValue * 25 / 687;
+  Serial.print("Voltage: ");
+  Serial.println(voltage);
 
   if (voltage > 26) enable = true;
   if (voltage < 25.6) enable = false;
